@@ -47,7 +47,7 @@ public class BookDetailActivity extends BaseActivity {
         title.setText((String)data.get("Name"));
         author.setText("Author:\n" + (String)data.get("Author"));
         int p = Integer.parseInt((String)data.get("Price"));
-        price.setText(p + "L.E.");
+        price.setText(p + "Rs`` ");
         overview.setText((String)data.get("Overview"));
 
         try {

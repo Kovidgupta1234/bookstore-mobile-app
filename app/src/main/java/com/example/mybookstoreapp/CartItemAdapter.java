@@ -69,7 +69,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         HashMap<String, Object> m = bookList.get(position);
         holder.title.setText((String)m.get("Name"));
         int p = Integer.parseInt((String)m.get("Price"));
-        holder.price.setText(p + "L.E.");
+        holder.price.setText(p + "Rs.");
         //holder.cover.setImageResource(m.getCoverId());
 
         try {

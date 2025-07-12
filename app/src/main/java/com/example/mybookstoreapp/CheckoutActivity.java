@@ -65,7 +65,7 @@ public class CheckoutActivity extends BaseActivity {
                     divider.setDrawable(getDrawable(R.drawable.gradient_divider));
                     rv.addItemDecoration(divider);
 
-                    ((TextView) findViewById(R.id.totalFee)).setText(total + " L.E.");
+                    ((TextView) findViewById(R.id.totalFee)).setText(total + "Rs.");
 
                 }
             }
