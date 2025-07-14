@@ -47,7 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
         //holder.rateView.setText((String)m.get("Rate"));
 
             int p = Integer.parseInt((String) m.get("Price"));
-            holder.priceView.setText(p + "L.E.");
+            holder.priceView.setText(p + "Rs.");
 
         try {
             Uri uri = Uri.parse((String) m.get(("Cover")));
