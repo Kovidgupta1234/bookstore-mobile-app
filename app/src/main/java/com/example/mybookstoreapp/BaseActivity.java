@@ -32,56 +32,66 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayShowCustomEnabled(true);
-        ab.setCustomView(R.layout.appbar);
+        if (ab != null) {
+            ab.setDisplayShowCustomEnabled(true);
+            ab.setCustomView(R.layout.appbar);
+        }
 
-        View v = ab.getCustomView();
+        View v = ab != null ? ab.getCustomView() : null;
 
-        ImageView back = (ImageView) v.findViewById(R.id.left_icon);
-        ImageView cart = (ImageView) v.findViewById(R.id.cart);
-        ImageView mode = (ImageView) v.findViewById(R.id.mode);
-        ImageView logout = (ImageView) v.findViewById(R.id.logout);
+        ImageView back = v != null ? (ImageView) v.findViewById(R.id.left_icon) : null;
+        ImageView cart = v != null ? (ImageView) v.findViewById(R.id.cart) : null;
+        ImageView mode = v != null ? (ImageView) v.findViewById(R.id.mode) : null;
+        ImageView logout = v != null ? (ImageView) v.findViewById(R.id.logout) : null;
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), CartActivity.class);
-                startActivity(i);
-
-            }
-        });
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Toast.makeText(getApplicationContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-            }
-        });
-
-        mode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(nightMode){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor = sharedPreference.edit();
-                    editor.putBoolean("night", false);
-                } else{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor = sharedPreference.edit();
-                    editor.putBoolean("night", true);
+        if (back != null) {
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
                 }
-                editor.apply();
-            }
-        });
+            });
+        }
+
+        if (cart != null) {
+            cart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getApplicationContext(), CartActivity.class);
+                    startActivity(i);
+
+                }
+            });
+        }
+
+        if (logout != null) {
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FirebaseAuth.getInstance().signOut();
+                    Toast.makeText(getApplicationContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                }
+            });
+        }
+
+        if (mode != null) {
+            mode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(nightMode){
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        editor = sharedPreference.edit();
+                        editor.putBoolean("night", false);
+                    } else{
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        editor = sharedPreference.edit();
+                        editor.putBoolean("night", true);
+                    }
+                    editor.apply();
+                }
+            });
+        }
 
     }
 }

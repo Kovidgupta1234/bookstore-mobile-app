@@ -47,7 +47,7 @@ public class BookDetailActivity extends BaseActivity {
         title.setText((String)data.get("Name"));
         author.setText("Author:\n" + (String)data.get("Author"));
         int p = Integer.parseInt((String)data.get("Price"));
-        price.setText(p + "Rs`` ");
+        price.setText("Rs. " + p);
         overview.setText((String)data.get("Overview"));
 
         try {
@@ -78,7 +78,7 @@ public class BookDetailActivity extends BaseActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(BookDetailActivity.this, "Error Occured. Couldn't add to cart.", Toast.LENGTH_SHORT);
+                                Toast.makeText(BookDetailActivity.this, "Error occurred. Couldn't add to cart.", Toast.LENGTH_SHORT).show();
                             }
                         });
 
