@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +34,8 @@ public class SignUpActivity extends BaseActivity {
         getSupportActionBar().hide();
 
         mAuth=FirebaseAuth.getInstance();
-
+        // Use device language for Firebase messages (removes X-Firebase-Locale warnings)
+        FirebaseAuth.getInstance().useAppLanguage();
 
         //sign up button
         signUpButton =(Button) findViewById(R.id.signUpButton);
@@ -43,7 +45,7 @@ public class SignUpActivity extends BaseActivity {
 
         //already have an account button
         haveAccountButton =(Button) findViewById(R.id.haveAccountButton);
-        etmail =(EditText) findViewById(R.id.phone);
+        etmail =(EditText) findViewById(R.id.email);
         tpassword =(EditText) findViewById(R.id.password) ;
         confirm = (EditText) findViewById(R.id.confirmPassword);
         name = (EditText) findViewById(R.id.username);
@@ -57,50 +59,68 @@ public class SignUpActivity extends BaseActivity {
         });
     }
     private void createUser(){
-        String email = etmail.getText().toString();
+        String email = etmail.getText().toString().trim();
         String password = tpassword.getText().toString();
-        String username = name.getText().toString();
-        Log.d("fml: ", username);
+        String username = name.getText().toString().trim();
         String confirm_pass = confirm.getText().toString();
+        Log.d("fml", "signup username=" + username + ", email=" + email);
 
+        if(TextUtils.isEmpty(username)){
+            name.setError("Name cannot be empty");
+            name.requestFocus();
+            return;
+        }
         if(TextUtils.isEmpty(email)){
             etmail.setError("Email cannot be empty");
             etmail.requestFocus();
-        }else if (TextUtils.isEmpty(password)){
+            return;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            etmail.setError("Enter a valid email address");
+            etmail.requestFocus();
+            return;
+        }
+        if(TextUtils.isEmpty(password)){
             tpassword.setError("Password cannot be empty");
             tpassword.requestFocus();
+            return;
         }
-        else if(TextUtils.isEmpty(username)){
-            etmail.setError("Name cannot be empty");
-            etmail.requestFocus();
+        if(password.length() < 6){
+            tpassword.setError("Password must be at least 6 characters");
+            tpassword.requestFocus();
+            return;
         }
-        else if(TextUtils.isEmpty(confirm_pass)){
+        if(!password.equals(confirm_pass)){
             confirm.setError("Passwords do not match");
             confirm.requestFocus();
-        }else{
-            mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+            return;
+        }
+
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user != null) {
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(username).build();
-
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                            public void onComplete(@NonNull Task<Void> t) {
                                 Toast.makeText(SignUpActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(SignUpActivity.this,SignInActivity.class));
                                 finish();
                             }
                         });
-
-                    }else{
-                        Toast.makeText(SignUpActivity.this, "Registration Error :"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(SignUpActivity.this, "Registration succeeded, but user is null", Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Exception e = task.getException();
+                    Log.e("fml", "Registration failed", e);
+                    Toast.makeText(SignUpActivity.this, "Registration Error: " + (e != null ? e.getMessage() : "Unknown error"), Toast.LENGTH_SHORT).show();
                 }
-            });
-
-        }
+            }
+        });
     }
 }

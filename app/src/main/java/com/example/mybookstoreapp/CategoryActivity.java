@@ -24,7 +24,13 @@ public class CategoryActivity extends BaseActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         TextView welcome = (TextView) findViewById(R.id.Welcome);
-        String msg = "Welcome, " + auth.getCurrentUser().getDisplayName() + "!";
+        String displayName = auth.getCurrentUser() != null ? auth.getCurrentUser().getDisplayName() : null;
+        if (displayName == null || displayName.isEmpty()) {
+            displayName = auth.getCurrentUser() != null && auth.getCurrentUser().getEmail() != null
+                    ? auth.getCurrentUser().getEmail()
+                    : "User";
+        }
+        String msg = "Welcome, " + displayName + "!";
         welcome.setText(msg);
 
         Button Horror= (Button) findViewById(R.id.Horror);

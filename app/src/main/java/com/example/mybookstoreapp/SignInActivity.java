@@ -32,6 +32,7 @@ public class SignInActivity extends BaseActivity {
 //        setMyActionBar(v);
 //
         mAuth= FirebaseAuth.getInstance();
+        FirebaseAuth.getInstance().useAppLanguage();
         if(mAuth.getCurrentUser() != null){
             startActivity(new Intent(SignInActivity.this,CategoryActivity.class));
             finish();
